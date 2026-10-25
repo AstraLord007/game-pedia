@@ -108,7 +108,7 @@ export default function HomeApi() {
                                 alt={game.title}
                                 className="w-full h-48 object-cover"
                             />
-                            <div className="p-5 flex flex-col flex-grow">
+                            <div className="p-5 flex flex-col grow">
                                 <div className="flex justify-between items-start gap-2 mb-2">
                                     <h3 className="text-lg font-bold text-gray-100 line-clamp-1">
                                         {game.title}
@@ -117,7 +117,7 @@ export default function HomeApi() {
                                         {game.genre}
                                     </span>
                                 </div>
-                                <p className="text-xs text-gray-400 line-clamp-2 mb-4 flex-grow">
+                                <p className="text-xs text-gray-400 line-clamp-2 mb-4 grow">
                                     {game.short_description}
                                 </p>
                                 <div className="text-xs text-gray-500 pt-3 border-t border-gray-800 flex justify-between items-center">
