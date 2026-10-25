@@ -1,110 +1,8 @@
 import { useState } from 'react';
-
-// Ajustamos los títulos y descripciones exactas a las imágenes correspondientes de la API
-const initialLocalGames = [
-    {
-        id: 475,
-        title: "Genshin Impact",
-        category: "Action RPG",
-        rating: "4.7",
-        thumbnail: "https://www.freetogame.com/g/475/thumbnail.jpg",
-        description: "Embárcate en un viaje a través de Teyvat para buscar respuestas de los Siete, los dioses de cada elemento.",
-        developer: "miHoYo / COGNOSPHERE",
-        releaseDate: "28/09/2020",
-        platform: "PC, Mobile, PlayStation"
-    },
-    {
-        id: 540,
-        title: "Overwatch 2",
-        category: "Shooter",
-        rating: "4.5",
-        thumbnail: "https://www.freetogame.com/g/540/thumbnail.jpg",
-        description: "Juego de disparos en primera persona impulsado por héroes únicos y combates dinámicos 5v5.",
-        developer: "Blizzard Entertainment",
-        releaseDate: "04/10/2022",
-        platform: "PC, Console"
-    },
-    {
-        id: 517,
-        title: "Lost Ark",
-        category: "MMORPG",
-        rating: "4.8",
-        thumbnail: "https://www.freetogame.com/g/517/thumbnail.jpg",
-        description: "Explora un vasto mundo en este MMO ARPG lleno de acción frenética y mazmorras desafiantes.",
-        developer: "Smilegate RPG",
-        releaseDate: "11/02/2022",
-        platform: "PC"
-    },
-    {
-        id: 516,
-        title: "PUBG: BATTLEGROUNDS",
-        category: "Battle Royale",
-        rating: "4.6",
-        thumbnail: "https://www.freetogame.com/g/516/thumbnail.jpg",
-        description: "Aterriza en ubicaciones estratégicas, saquea armas y suministros para ser el último equipo en pie.",
-        developer: "KRAFTON, Inc.",
-        releaseDate: "21/12/2017",
-        platform: "PC, Console, Mobile"
-    },
-    {
-        id: 521,
-        title: "Diablo Immortal",
-        category: "Action RPG",
-        rating: "4.4",
-        thumbnail: "https://www.freetogame.com/g/521/thumbnail.jpg",
-        description: "Enfréntate a hordas de demonios, obtén botín épico y consigue un poder inimaginable.",
-        developer: "Blizzard & NetEase",
-        releaseDate: "02/06/2022",
-        platform: "PC, Mobile"
-    },
-    {
-        id: 11,
-        title: "Neverwinter",
-        category: "MMORPG",
-        rating: "4.7",
-        thumbnail: "https://www.freetogame.com/g/11/thumbnail.jpg",
-        description: "Un MMORPG de acción basado en el universo fantástico y legendario de Dungeons & Dragons.",
-        developer: "Cryptic Studios",
-        releaseDate: "20/06/2013",
-        platform: "PC, Xbox One, PS4"
-    },
-    {
-        id: 523,
-        title: "Fall Guys",
-        category: "Battle Royale",
-        rating: "4.5",
-        thumbnail: "https://www.freetogame.com/g/523/thumbnail.jpg",
-        description: "Un party royale masivo donde tú y otros contendientes compiten en rondas de caos divertido.",
-        developer: "Mediatonic",
-        releaseDate: "04/08/2020",
-        platform: "PC, Console, Switch"
-    },
-    {
-        id: 508,
-        title: "Enlisted",
-        category: "Shooter",
-        rating: "4.6",
-        thumbnail: "https://www.freetogame.com/g/508/thumbnail.jpg",
-        description: "Un juego de disparos táctico en escuadrones MMO ambientado en la Segunda Guerra Mundial.",
-        developer: "Dark Flow Software",
-        releaseDate: "08/04/2021",
-        platform: "PC, PlayStation, Xbox"
-    },
-    {
-        id: 525,
-        title: "MultiVersus",
-        category: "Lucha",
-        rating: "4.3",
-        thumbnail: "https://www.freetogame.com/g/525/thumbnail.jpg",
-        description: "Juego de lucha en plataformas con icónicos personajes de franquicias como Batman, Bugs Bunny y Shaggy.",
-        developer: "Player First Games",
-        releaseDate: "19/07/2022",
-        platform: "PC, PlayStation, Xbox"
-    }
-];
+import { localGamesData } from '../data/gamesData';
 
 export default function LocalGames() {
-    const [games] = useState(initialLocalGames);
+    const [games] = useState(localGamesData);
     const [selectedCategory, setSelectedCategory] = useState('Todos');
     const [selectedGameModal, setSelectedGameModal] = useState(null);
 
@@ -134,7 +32,7 @@ export default function LocalGames() {
                             <button
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
-                                className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors ${selectedCategory === category
+                                className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors cursor-pointer ${selectedCategory === category
                                         ? 'bg-blue-600 text-white border-blue-500'
                                         : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700 hover:text-gray-200'
                                     }`}
@@ -197,8 +95,7 @@ export default function LocalGames() {
             {/* MODAL DE DETALLES */}
             {selectedGameModal && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl animate-fade-in relative">
-                        {/* Imagen del modal */}
+                    <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative">
                         <div className="relative h-56">
                             <img
                                 src={selectedGameModal.thumbnail}
@@ -207,7 +104,7 @@ export default function LocalGames() {
                             />
                             <button
                                 onClick={() => setSelectedGameModal(null)}
-                                className="absolute top-3 right-3 bg-gray-950/80 hover:bg-gray-800 text-gray-300 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border border-gray-700 transition-colors"
+                                className="absolute top-3 right-3 bg-gray-950/80 hover:bg-gray-800 text-gray-300 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border border-gray-700 transition-colors cursor-pointer"
                             >
                                 ✕
                             </button>
@@ -216,7 +113,6 @@ export default function LocalGames() {
                             </span>
                         </div>
 
-                        {/* Contenido del modal */}
                         <div className="p-6">
                             <div className="flex justify-between items-center mb-3">
                                 <h2 className="text-2xl font-bold text-gray-100">
@@ -231,7 +127,6 @@ export default function LocalGames() {
                                 {selectedGameModal.description}
                             </p>
 
-                            {/* Ficha técnica del juego */}
                             <div className="grid grid-cols-2 gap-4 bg-gray-950 p-4 rounded-xl border border-gray-800/80 text-xs mb-6">
                                 <div>
                                     <span className="text-gray-500 block">Desarrollador:</span>
@@ -247,11 +142,10 @@ export default function LocalGames() {
                                 </div>
                             </div>
 
-                            {/* Botón de cierre */}
                             <div className="flex justify-end">
                                 <button
                                     onClick={() => setSelectedGameModal(null)}
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors"
+                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
                                 >
                                     Cerrar
                                 </button>
