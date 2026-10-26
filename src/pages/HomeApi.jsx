@@ -59,7 +59,7 @@ export default function HomeApi() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto pb-12 pt-16"> {/* Añadido pt-16 por si el navbar es fixed */}
+        <div className="max-w-7xl mx-auto pb-10 pt-1">
             {/* Encabezado y Filtros */}
             <header className="mb-8 border-b border-gray-800 pb-4">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -85,8 +85,8 @@ export default function HomeApi() {
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
                                 className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors cursor-pointer ${selectedCategory === category
-                                        ? 'bg-blue-600 text-white border-blue-500'
-                                        : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700 hover:text-gray-200'
+                                    ? 'bg-blue-600 text-white border-blue-500'
+                                    : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700 hover:text-gray-200'
                                     }`}
                             >
                                 {category}
