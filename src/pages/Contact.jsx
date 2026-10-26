@@ -1,104 +1,11 @@
-import { useState } from 'react';
+import { useForm, ValidationError } from '@formspree/react';
 
 export default function Contact() {
-    const [formData, setFormData] = useState({
-        nombre: '',
-        email: '',
-        asunto: '',
-        mensaje: ''
-    });
-
-    const [errors, setErrors] = useState({});
-    const [submitted, setSubmitted] = useState(false);
-
-    // Función para sanitizar entradas y prevenir inyección de código (XSS)
-    const sanitizeInput = (str) => {
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#x27;')
-            .replace(/\//g, '&#x2F;');
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value
-        }));
-        // Limpiar error del campo al escribir
-        if (errors[name]) {
-            setErrors((prev) => ({ ...prev, [name]: null }));
-        }
-    };
-
-    // Validaciones del formulario
-    const validateForm = () => {
-        const newErrors = {};
-
-        // Validar nombre
-        const cleanNombre = formData.nombre.trim();
-        if (!cleanNombre) {
-            newErrors.nombre = 'El nombre es obligatorio.';
-        } else if (cleanNombre.length < 2) {
-            newErrors.nombre = 'El nombre debe tener al menos 2 caracteres.';
-        }
-
-        // Validar email con expresión regular
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!formData.email.trim()) {
-            newErrors.email = 'El correo electrónico es obligatorio.';
-        } else if (!emailRegex.test(formData.email.trim())) {
-            newErrors.email = 'Ingresa un correo electrónico válido.';
-        }
-
-        // Validar asunto
-        if (!formData.asunto.trim()) {
-            newErrors.asunto = 'El asunto es obligatorio.';
-        }
-
-        // Validar mensaje
-        const cleanMensaje = formData.mensaje.trim();
-        if (!cleanMensaje) {
-            newErrors.mensaje = 'El mensaje no puede estar vacío.';
-        } else if (cleanMensaje.length < 10) {
-            newErrors.mensaje = 'El mensaje debe tener al menos 10 caracteres.';
-        }
-
-        return newErrors;
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const formValidationErrors = validateForm();
-        if (Object.keys(formValidationErrors).length > 0) {
-            setErrors(formValidationErrors);
-            return;
-        }
-
-        // Sanitización de los datos ingresados para evitar inyecciones
-        const sanitizedData = {
-            nombre: sanitizeInput(formData.nombre.trim()),
-            email: sanitizeInput(formData.email.trim()),
-            asunto: sanitizeInput(formData.asunto.trim()),
-            mensaje: sanitizeInput(formData.mensaje.trim())
-        };
-
-        console.log('Datos procesados y sanitizados:', sanitizedData);
-        setSubmitted(true);
-    };
-
-    const handleReset = () => {
-        setFormData({ nombre: '', email: '', asunto: '', mensaje: '' });
-        setErrors({});
-        setSubmitted(false);
-    };
+    // Usamos el hook oficial de Formspree con tu endpoint exacto
+    const [state, handleSubmit] = useForm("maeeedgl");
 
     return (
-        <div className="max-w-6xl mx-auto pb-12">
+        <div className="max-w-6xl mx-auto pb-12 pt-1">
             {/* Encabezado */}
             <header className="mb-10 border-b border-gray-800 pb-4 text-center md:text-left">
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-100 tracking-tight">
@@ -112,7 +19,7 @@ export default function Contact() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Panel Lateral: Soporte, Comunidad y Mapa Embebido */}
                 <div className="space-y-6 lg:col-span-1">
-                    {/* Cuadro de Soporte & Comunidad (Mantenido) */}
+                    {/* Cuadro de Soporte & Comunidad */}
                     <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-lg">
                         <h3 className="text-lg font-bold text-gray-100 mb-4 border-b border-gray-800 pb-2">
                             Soporte & Comunidad
@@ -123,7 +30,7 @@ export default function Contact() {
                                 <span className="text-blue-500 font-bold text-base">📧</span>
                                 <div>
                                     <strong className="block text-gray-200">Correo Electrónico:</strong>
-                                    <span>soporte@gamepedia.dev</span>
+                                    <span>mauridlenz@gmail.com</span>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">
@@ -150,7 +57,7 @@ export default function Contact() {
                         </ul>
                     </div>
 
-                    {/* Mapa Embebido de Galería Margalef (Reemplaza al cuadro de Nota) */}
+                    {/* Mapa Embebido de Galería Margalef */}
                     <div className="bg-gray-900 border border-gray-800 p-5 rounded-2xl shadow-lg space-y-3">
                         <div>
                             <h4 className="text-sm font-bold text-gray-100">Ubicación Física</h4>
@@ -177,103 +84,97 @@ export default function Contact() {
                 {/* Formulario Principal */}
                 <div className="lg:col-span-2">
                     <div className="bg-gray-900 border border-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg">
-                        {submitted ? (
+                        {state.succeeded ? (
                             <div className="text-center py-10 space-y-4">
                                 <div className="w-16 h-16 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded-full flex items-center justify-center text-3xl mx-auto">
                                     ✓
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-100">¡Mensaje Enviado!</h2>
                                 <p className="text-xs text-gray-400 max-w-md mx-auto">
-                                    Gracias por escribirnos, <strong className="text-gray-200">{formData.nombre}</strong>. Hemos recibido tu sugerencia y te responderemos pronto.
+                                    Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos pronto.
                                 </p>
                                 <button
-                                    onClick={handleReset}
+                                    type="button"
+                                    onClick={() => window.location.reload()}
                                     className="mt-4 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
                                 >
                                     Enviar otro mensaje
                                 </button>
                             </div>
                         ) : (
-                            <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+                            <form onSubmit={handleSubmit} className="space-y-5">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                     <div>
-                                        <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                                        <label className="block text-xs font-medium text-gray-300 mb-1.5" htmlFor="name">
                                             Nombre completo
                                         </label>
                                         <input
+                                            id="name"
                                             type="text"
-                                            name="nombre"
-                                            value={formData.nombre}
-                                            onChange={handleChange}
+                                            name="name"
+                                            required
                                             placeholder="Ej: Mauri"
-                                            className={`w-full bg-gray-950 border ${errors.nombre ? 'border-red-500' : 'border-gray-800'
-                                                } rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors`}
+                                            className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
                                         />
-                                        {errors.nombre && (
-                                            <p className="text-red-400 text-[11px] mt-1">{errors.nombre}</p>
-                                        )}
+                                        <ValidationError prefix="Name" field="name" errors={state.errors} />
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                                        <label className="block text-xs font-medium text-gray-300 mb-1.5" htmlFor="email">
                                             Correo Electrónico
                                         </label>
                                         <input
+                                            id="email"
                                             type="email"
                                             name="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
+                                            required
                                             placeholder="usuario@ejemplo.com"
-                                            className={`w-full bg-gray-950 border ${errors.email ? 'border-red-500' : 'border-gray-800'
-                                                } rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors`}
+                                            className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
                                         />
-                                        {errors.email && (
-                                            <p className="text-red-400 text-[11px] mt-1">{errors.email}</p>
-                                        )}
+                                        <ValidationError prefix="Email" field="email" errors={state.errors} />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                                    <label className="block text-xs font-medium text-gray-300 mb-1.5" htmlFor="subject">
                                         Asunto
                                     </label>
                                     <input
+                                        id="subject"
                                         type="text"
-                                        name="asunto"
-                                        value={formData.asunto}
-                                        onChange={handleChange}
+                                        name="subject"
+                                        required
                                         placeholder="Sugerencia de juego, reporte de error, etc."
-                                        className={`w-full bg-gray-950 border ${errors.asunto ? 'border-red-500' : 'border-gray-800'
-                                            } rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors`}
+                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
                                     />
-                                    {errors.asunto && (
-                                        <p className="text-red-400 text-[11px] mt-1">{errors.asunto}</p>
-                                    )}
+                                    <ValidationError prefix="Subject" field="subject" errors={state.errors} />
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                                    <label className="block text-xs font-medium text-gray-300 mb-1.5" htmlFor="message">
                                         Mensaje
                                     </label>
                                     <textarea
-                                        name="mensaje"
+                                        id="message"
+                                        name="message"
+                                        required
                                         rows="5"
-                                        value={formData.mensaje}
-                                        onChange={handleChange}
                                         placeholder="Escribe tu mensaje aquí..."
-                                        className={`w-full bg-gray-950 border ${errors.mensaje ? 'border-red-500' : 'border-gray-800'
-                                            } rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors resize-none`}
+                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors resize-none"
                                     ></textarea>
-                                    {errors.mensaje && (
-                                        <p className="text-red-400 text-[11px] mt-1">{errors.mensaje}</p>
-                                    )}
+                                    <ValidationError prefix="Message" field="message" errors={state.errors} />
                                 </div>
 
                                 <button
                                     type="submit"
-                                    className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer shadow-lg shadow-blue-600/20"
+                                    disabled={state.submitting}
+                                    className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer shadow-lg shadow-blue-600/20 flex justify-center items-center min-w-35"
                                 >
-                                    Enviar Mensaje →
+                                    {state.submitting ? (
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                    ) : (
+                                        'Enviar Mensaje →'
+                                    )}
                                 </button>
                             </form>
                         )}
