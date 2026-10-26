@@ -47,13 +47,30 @@ export default function Navbar() {
             {/* Formulario de Búsqueda (Solo se muestra en el Home) */}
             {isHome ? (
                 <form onSubmit={handleSearchSubmit} className="flex gap-2 items-center mx-4">
-                    <input
-                        type="text"
-                        placeholder="Buscar videojuegos..."
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        className="px-3 py-1.5 text-sm bg-gray-950 border border-gray-700 rounded-md text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 w-40 sm:w-64"
-                    />
+                    <div className="relative flex items-center">
+                        <input
+                            type="text"
+                            placeholder="Buscar videojuegos..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            // Añadimos pr-8 para que el texto no quede debajo de la "x"
+                            className="px-3 py-1.5 pr-8 text-sm bg-gray-950 border border-gray-700 rounded-md text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 w-40 sm:w-64"
+                        />
+                        {/* Botón "X" para limpiar la búsqueda si hay texto */}
+                        {searchTerm && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    navigate('/');
+                                }}
+                                className="absolute right-2.5 text-gray-400 hover:text-gray-100 text-xs font-bold cursor-pointer transition-colors"
+                                title="Limpiar búsqueda"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
                     <button
                         type="submit"
                         className="px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors cursor-pointer"
