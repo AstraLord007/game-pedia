@@ -19,7 +19,7 @@ export default function LocalGames() {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-100 tracking-tight">
-                            Juegos Destacados (Local)
+                            Juegos Destacados
                         </h1>
                         <p className="mt-2 text-sm sm:text-base text-gray-400">
                             Colección seleccionada de los títulos más recomendados por la comunidad.
@@ -33,8 +33,8 @@ export default function LocalGames() {
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
                                 className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors cursor-pointer ${selectedCategory === category
-                                        ? 'bg-blue-600 text-white border-blue-500'
-                                        : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700 hover:text-gray-200'
+                                    ? 'bg-blue-600 text-white border-blue-500'
+                                    : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700 hover:text-gray-200'
                                     }`}
                             >
                                 {category}

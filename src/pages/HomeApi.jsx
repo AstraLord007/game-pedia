@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom'; // 1. Importar useSearchParams
 
 export default function HomeApi() {
     const [games, setGames] = useState([]);
@@ -6,6 +7,10 @@ export default function HomeApi() {
     const [error, setError] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState('Todos');
     const [selectedGameModal, setSelectedGameModal] = useState(null);
+
+    // 2. Obtener el parámetro de búsqueda de la URL
+    const [searchParams] = useSearchParams();
+    const searchQuery = searchParams.get('search') || '';
 
     // Categorías con alta presencia de juegos en la API
     const categories = ['Todos', 'Shooter', 'MMORPG', 'Action RPG', 'Strategy', 'ARPG'];
@@ -26,13 +31,16 @@ export default function HomeApi() {
             });
     }, []);
 
-    // Filtrado flexible por género
-    const filteredGames = selectedCategory === 'Todos'
-        ? games
-        : games.filter((game) =>
+    // 3. Filtrado flexible por género Y por la consulta del buscador del Navbar
+    const filteredGames = games.filter((game) => {
+        const matchesCategory = selectedCategory === 'Todos' ||
             game.genre.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-            selectedCategory.toLowerCase().includes(game.genre.toLowerCase())
-        );
+            selectedCategory.toLowerCase().includes(game.genre.toLowerCase());
+
+        const matchesSearch = game.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+        return matchesCategory && matchesSearch;
+    });
 
     if (loading) {
         return (
@@ -51,17 +59,23 @@ export default function HomeApi() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto pb-12">
+        <div className="max-w-7xl mx-auto pb-12 pt-16"> {/* Añadido pt-16 por si el navbar es fixed */}
             {/* Encabezado y Filtros */}
             <header className="mb-8 border-b border-gray-800 pb-4">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-100 tracking-tight">
-                            Catálogo Global (API)
+                            Catálogo Global de Videojuegos
                         </h1>
                         <p className="mt-2 text-sm sm:text-base text-gray-400">
                             Explora videojuegos gratuitos en tiempo real obtenidos directamente desde FreeToGame.
                         </p>
+                        {/* Indicador visual si hay una búsqueda activa */}
+                        {searchQuery && (
+                            <p className="mt-2 text-xs text-blue-400 font-medium">
+                                Resultados de búsqueda para: &quot;<span className="font-bold">{searchQuery}</span>&quot;
+                            </p>
+                        )}
                     </div>
 
                     {/* Filtros por Género */}
@@ -82,14 +96,17 @@ export default function HomeApi() {
                 </div>
             </header>
 
-            {/* Si no hay juegos para la categoría seleccionada */}
+            {/* Si no hay juegos para la categoría o búsqueda seleccionada */}
             {filteredGames.length === 0 ? (
                 <div className="text-center py-16 bg-gray-900/50 rounded-2xl border border-gray-800">
                     <p className="text-gray-400 text-sm">
-                        No se encontraron juegos para el género <span className="text-blue-400 font-semibold">"{selectedCategory}"</span> en esta muestra.
+                        No se encontraron juegos {searchQuery ? `para "${searchQuery}"` : ''} en el género <span className="text-blue-400 font-semibold">"{selectedCategory}"</span>.
                     </p>
                     <button
-                        onClick={() => setSelectedCategory('Todos')}
+                        onClick={() => {
+                            setSelectedCategory('Todos');
+                            window.history.replaceState({}, '', '/'); // Limpia los parámetros de búsqueda de la URL
+                        }}
                         className="mt-4 text-xs bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer"
                     >
                         Ver todos los juegos
