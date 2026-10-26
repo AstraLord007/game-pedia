@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function HomeApi() {
     const [games, setGames] = useState([]);
@@ -7,32 +9,36 @@ export default function HomeApi() {
     const [selectedCategory, setSelectedCategory] = useState('Todos');
     const [selectedGameModal, setSelectedGameModal] = useState(null);
 
+    // Obtener el parámetro de búsqueda de la URL y la función navigate
+    const [searchParams] = useSearchParams();
+    const searchQuery = searchParams.get('search') || '';
+    const navigate = useNavigate();
+
     // Categorías con alta presencia de juegos en la API
     const categories = ['Todos', 'Shooter', 'MMORPG', 'Action RPG', 'Strategy', 'ARPG'];
 
     useEffect(() => {
-        fetch('https://www.freetogame.com/api/games')
-            .then((res) => {
-                if (!res.ok) throw new Error('Error al conectar con la API de juegos');
-                return res.json();
-            })
-            .then((data) => {
-                setGames(data.slice(0, 36)); // Tomamos una muestra más amplia (36 juegos)
+        axios.get('https://www.freetogame.com/api/games')
+            .then((response) => {
+                setGames(response.data.slice(0, 36));
                 setLoading(false);
             })
             .catch((err) => {
-                setError(err.message);
+                setError(err.message || 'Error al conectar con la API de juegos');
                 setLoading(false);
             });
     }, []);
 
-    // Filtrado flexible por género
-    const filteredGames = selectedCategory === 'Todos'
-        ? games
-        : games.filter((game) =>
+    // Filtrado flexible por género Y por la consulta del buscador del Navbar
+    const filteredGames = games.filter((game) => {
+        const matchesCategory = selectedCategory === 'Todos' ||
             game.genre.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-            selectedCategory.toLowerCase().includes(game.genre.toLowerCase())
-        );
+            selectedCategory.toLowerCase().includes(game.genre.toLowerCase());
+
+        const matchesSearch = game.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+        return matchesCategory && matchesSearch;
+    });
 
     if (loading) {
         return (
@@ -51,17 +57,23 @@ export default function HomeApi() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto pb-12">
+        <div className="max-w-7xl mx-auto pb-10 pt-1">
             {/* Encabezado y Filtros */}
             <header className="mb-8 border-b border-gray-800 pb-4">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-100 tracking-tight">
-                            Catálogo Global (API)
+                            Catálogo Global de Videojuegos
                         </h1>
                         <p className="mt-2 text-sm sm:text-base text-gray-400">
                             Explora videojuegos gratuitos en tiempo real obtenidos directamente desde FreeToGame.
                         </p>
+                        {/* Indicador visual si hay una búsqueda activa */}
+                        {searchQuery && (
+                            <p className="mt-2 text-xs text-blue-400 font-medium">
+                                Resultados de búsqueda para: &quot;<span className="font-bold">{searchQuery}</span>&quot;
+                            </p>
+                        )}
                     </div>
 
                     {/* Filtros por Género */}
@@ -71,8 +83,8 @@ export default function HomeApi() {
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
                                 className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors cursor-pointer ${selectedCategory === category
-                                        ? 'bg-blue-600 text-white border-blue-500'
-                                        : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700 hover:text-gray-200'
+                                    ? 'bg-blue-600 text-white border-blue-500'
+                                    : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700 hover:text-gray-200'
                                     }`}
                             >
                                 {category}
@@ -82,14 +94,17 @@ export default function HomeApi() {
                 </div>
             </header>
 
-            {/* Si no hay juegos para la categoría seleccionada */}
+            {/* Si no hay juegos para la categoría o búsqueda seleccionada */}
             {filteredGames.length === 0 ? (
                 <div className="text-center py-16 bg-gray-900/50 rounded-2xl border border-gray-800">
                     <p className="text-gray-400 text-sm">
-                        No se encontraron juegos para el género <span className="text-blue-400 font-semibold">"{selectedCategory}"</span> en esta muestra.
+                        No se encontraron juegos {searchQuery ? `para "${searchQuery}"` : ''} en el género <span className="text-blue-400 font-semibold">"{selectedCategory}"</span>.
                     </p>
                     <button
-                        onClick={() => setSelectedCategory('Todos')}
+                        onClick={() => {
+                            setSelectedCategory('Todos');
+                            navigate('/'); // Limpia los parámetros de la URL y restablece la vista por completo
+                        }}
                         className="mt-4 text-xs bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer"
                     >
                         Ver todos los juegos
