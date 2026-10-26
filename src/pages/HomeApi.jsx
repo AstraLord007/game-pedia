@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom'; // 1. Importar useNavigate
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function HomeApi() {
     const [games, setGames] = useState([]);
@@ -8,7 +9,7 @@ export default function HomeApi() {
     const [selectedCategory, setSelectedCategory] = useState('Todos');
     const [selectedGameModal, setSelectedGameModal] = useState(null);
 
-    // 2. Obtener el parámetro de búsqueda de la URL y la función navigate
+    // Obtener el parámetro de búsqueda de la URL y la función navigate
     const [searchParams] = useSearchParams();
     const searchQuery = searchParams.get('search') || '';
     const navigate = useNavigate();
@@ -17,22 +18,18 @@ export default function HomeApi() {
     const categories = ['Todos', 'Shooter', 'MMORPG', 'Action RPG', 'Strategy', 'ARPG'];
 
     useEffect(() => {
-        fetch('https://www.freetogame.com/api/games')
-            .then((res) => {
-                if (!res.ok) throw new Error('Error al conectar con la API de juegos');
-                return res.json();
-            })
-            .then((data) => {
-                setGames(data.slice(0, 36)); // Tomamos una muestra más amplia (36 juegos)
+        axios.get('https://www.freetogame.com/api/games')
+            .then((response) => {
+                setGames(response.data.slice(0, 36));
                 setLoading(false);
             })
             .catch((err) => {
-                setError(err.message);
+                setError(err.message || 'Error al conectar con la API de juegos');
                 setLoading(false);
             });
     }, []);
 
-    // 3. Filtrado flexible por género Y por la consulta del buscador del Navbar
+    // Filtrado flexible por género Y por la consulta del buscador del Navbar
     const filteredGames = games.filter((game) => {
         const matchesCategory = selectedCategory === 'Todos' ||
             game.genre.toLowerCase().includes(selectedCategory.toLowerCase()) ||
