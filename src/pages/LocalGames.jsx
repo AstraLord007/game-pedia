@@ -1,0 +1,159 @@
+import { useState } from 'react';
+import { localGamesData } from '../data/gamesData';
+
+export default function LocalGames() {
+    const [games] = useState(localGamesData);
+    const [selectedCategory, setSelectedCategory] = useState('Todos');
+    const [selectedGameModal, setSelectedGameModal] = useState(null);
+
+    const categories = ['Todos', 'Action RPG', 'Shooter', 'MMORPG', 'Battle Royale', 'Lucha'];
+
+    const filteredGames = selectedCategory === 'Todos'
+        ? games
+        : games.filter(game => game.category === selectedCategory);
+
+    return (
+        <div className="max-w-7xl mx-auto pb-12">
+            {/* Encabezado */}
+            <header className="mb-8 border-b border-gray-800 pb-4">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-100 tracking-tight">
+                            Juegos Destacados
+                        </h1>
+                        <p className="mt-2 text-sm sm:text-base text-gray-400">
+                            Colección seleccionada de los títulos más recomendados por la comunidad.
+                        </p>
+                    </div>
+
+                    {/* Filtro por Categorías */}
+                    <div className="flex flex-wrap gap-2">
+                        {categories.map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => setSelectedCategory(category)}
+                                className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors cursor-pointer ${selectedCategory === category
+                                    ? 'bg-blue-600 text-white border-blue-500'
+                                    : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700 hover:text-gray-200'
+                                    }`}
+                            >
+                                {category}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </header>
+
+            {/* Grilla de Tarjetas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredGames.map((game) => (
+                    <div
+                        key={game.id}
+                        className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-lg hover:border-blue-500/50 hover:shadow-blue-500/10 transition-all duration-300 flex flex-col"
+                    >
+                        <div className="relative">
+                            <img
+                                src={game.thumbnail}
+                                alt={game.title}
+                                className="w-full h-48 object-cover"
+                            />
+                            <span className="absolute top-3 right-3 bg-blue-600/90 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full font-bold shadow-md">
+                                ★ {game.rating}
+                            </span>
+                        </div>
+
+                        <div className="p-5 flex flex-col grow">
+                            <div className="flex justify-between items-start gap-2 mb-2">
+                                <h3 className="text-lg font-bold text-gray-100 line-clamp-1">
+                                    {game.title}
+                                </h3>
+                                <span className="text-xs px-2.5 py-1 bg-blue-950 text-blue-400 border border-blue-800 rounded-full font-medium whitespace-nowrap">
+                                    {game.category}
+                                </span>
+                            </div>
+
+                            <p className="text-xs text-gray-400 line-clamp-3 mb-4 grow">
+                                {game.description}
+                            </p>
+
+                            <div className="pt-3 border-t border-gray-800 flex justify-between items-center">
+                                <span className="text-xs text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2.5 py-0.5 rounded-md font-medium">
+                                    Destacado
+                                </span>
+                                <button
+                                    onClick={() => setSelectedGameModal(game)}
+                                    className="text-xs text-blue-400 hover:text-blue-300 font-semibold transition-colors cursor-pointer"
+                                >
+                                    Ver detalles →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* MODAL DE DETALLES */}
+            {selectedGameModal && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                    <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative">
+                        <div className="relative h-56">
+                            <img
+                                src={selectedGameModal.thumbnail}
+                                alt={selectedGameModal.title}
+                                className="w-full h-full object-cover"
+                            />
+                            <button
+                                onClick={() => setSelectedGameModal(null)}
+                                className="absolute top-3 right-3 bg-gray-950/80 hover:bg-gray-800 text-gray-300 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border border-gray-700 transition-colors cursor-pointer"
+                            >
+                                ✕
+                            </button>
+                            <span className="absolute bottom-3 left-3 bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">
+                                ★ {selectedGameModal.rating}
+                            </span>
+                        </div>
+
+                        <div className="p-6">
+                            <div className="flex justify-between items-center mb-3">
+                                <h2 className="text-2xl font-bold text-gray-100">
+                                    {selectedGameModal.title}
+                                </h2>
+                                <span className="text-xs px-2.5 py-1 bg-blue-950 text-blue-400 border border-blue-800 rounded-full font-medium">
+                                    {selectedGameModal.category}
+                                </span>
+                            </div>
+
+                            <p className="text-sm text-gray-300 mb-6 leading-relaxed">
+                                {selectedGameModal.description}
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-4 bg-gray-950 p-4 rounded-xl border border-gray-800/80 text-xs mb-6">
+                                <div>
+                                    <span className="text-gray-500 block">Desarrollador:</span>
+                                    <span className="text-gray-200 font-medium">{selectedGameModal.developer}</span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-500 block">Fecha de Lanzamiento:</span>
+                                    <span className="text-gray-200 font-medium">{selectedGameModal.releaseDate}</span>
+                                </div>
+                                <div className="col-span-2">
+                                    <span className="text-gray-500 block">Plataformas:</span>
+                                    <span className="text-gray-200 font-medium">{selectedGameModal.platform}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end">
+                                <button
+                                    onClick={() => setSelectedGameModal(null)}
+                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
+                                >
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
