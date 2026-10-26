@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom'; // 1. Importar useSearchParams
+import { useSearchParams, useNavigate } from 'react-router-dom'; // 1. Importar useNavigate
 
 export default function HomeApi() {
     const [games, setGames] = useState([]);
@@ -8,9 +8,10 @@ export default function HomeApi() {
     const [selectedCategory, setSelectedCategory] = useState('Todos');
     const [selectedGameModal, setSelectedGameModal] = useState(null);
 
-    // 2. Obtener el parámetro de búsqueda de la URL
+    // 2. Obtener el parámetro de búsqueda de la URL y la función navigate
     const [searchParams] = useSearchParams();
     const searchQuery = searchParams.get('search') || '';
+    const navigate = useNavigate();
 
     // Categorías con alta presencia de juegos en la API
     const categories = ['Todos', 'Shooter', 'MMORPG', 'Action RPG', 'Strategy', 'ARPG'];
@@ -105,7 +106,7 @@ export default function HomeApi() {
                     <button
                         onClick={() => {
                             setSelectedCategory('Todos');
-                            window.history.replaceState({}, '', '/'); // Limpia los parámetros de búsqueda de la URL
+                            navigate('/'); // Limpia los parámetros de la URL y restablece la vista por completo
                         }}
                         className="mt-4 text-xs bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer"
                     >
