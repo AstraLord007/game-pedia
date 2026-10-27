@@ -94,10 +94,11 @@ export default function Contact() {
                                     Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos pronto.
                                 </p>
 
-                                {/* 2. Usamos directamente la función reset en el onClick */}
                                 <button
                                     type="button"
-                                    onClick={reset}
+                                    onClick={() => {
+                                        window.location.href = '/game-pedia/contacto';
+                                    }}
                                     className="mt-4 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
                                 >
                                     Enviar otro mensaje
