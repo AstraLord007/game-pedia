@@ -1,16 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/game-pedia/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>game-pedia</title>
+    <title>GamePedia</title>
+
+    <!-- Script SPA Redirect para GitHub Pages -->
+    <script type="text/javascript">
+        // Redirige cualquier ruta falsa al index.html pasando la ruta en un parámetro 'p'
+        var pathSegmentsToKeep = 1; // 1 porque la URL es /game-pedia/
+        var l = window.location;
+        var path = l.pathname.split('/').slice(pathSegmentsToKeep + 1).join('/');
+        var search = l.search ? l.search : '';
+        var hash = l.hash ? l.hash : '';
+
+        // Guarda la ruta y redirige a la raíz del proyecto
+        sessionStorage.redirect = '/' + path + search + hash;
+        window.location.replace(
+            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/' + l.pathname.split('/')[1] + '/'
+        );
+    </script>
 </head>
 
-<body>
+<body class="bg-gray-950 text-gray-100">
     <div id="root"></div>
-    <script type="module" src="/game-pedia/src/main.jsx"></script>
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>
