@@ -58,7 +58,7 @@ Para ejecutar este proyecto en tu entorno local, sigue estos pasos:
 
 1. **Clonar el repositorio:**
 ```bash
-git clone [https://github.com/AstraLord007/game-pedia.git]
+git clone https://github.com/AstraLord007/game-pedia.git
 cd game-pedia
 ```
 
@@ -78,6 +78,7 @@ npm run dev
 
 ## 📂 Estructura del Proyecto
 
+```text
 src/
 ├── assets/          # Recursos estáticos e imágenes para la documentación
 ├── components/      # Componentes reutilizables (Navbar, Footer, Cards, Modales, etc.)
@@ -85,3 +86,4 @@ src/
 ├── pages/           # Vistas principales de la SPA (Home, LocalGames, Contact, NotFound, etc.)
 ├── App.jsx          # Componente principal y estructura de rutas
 └── main.jsx         # Punto de entrada de la aplicación
+```
