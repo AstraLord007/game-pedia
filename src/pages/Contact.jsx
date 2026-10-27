@@ -1,9 +1,8 @@
 import { useForm, ValidationError } from '@formspree/react';
-import { useNavigate } from 'react-router-dom';
 
 export default function Contact() {
-    const [state, handleSubmit] = useForm("maeeedgl");
-    const navigate = useNavigate();
+    // 1. Añadimos 'reset' como tercer elemento de useForm
+    const [state, handleSubmit, reset] = useForm("maeeedgl");
 
     return (
         <div className="max-w-6xl mx-auto pb-12 pt-1">
@@ -94,9 +93,11 @@ export default function Contact() {
                                 <p className="text-xs text-gray-400 max-w-md mx-auto">
                                     Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos pronto.
                                 </p>
+
+                                {/* 2. Usamos directamente la función reset en el onClick */}
                                 <button
                                     type="button"
-                                    onClick={() => navigate('/contacto')}
+                                    onClick={reset}
                                     className="mt-4 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
                                 >
                                     Enviar otro mensaje
