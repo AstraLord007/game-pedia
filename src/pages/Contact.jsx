@@ -1,7 +1,9 @@
 import { useForm, ValidationError } from '@formspree/react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Contact() {
     const [state, handleSubmit] = useForm("maeeedgl");
+    const navigate = useNavigate();
 
     return (
         <div className="max-w-6xl mx-auto pb-12 pt-1">
@@ -94,7 +96,7 @@ export default function Contact() {
                                 </p>
                                 <button
                                     type="button"
-                                    onClick={() => window.location.reload()}
+                                    onClick={() => navigate('/contacto')}
                                     className="mt-4 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
                                 >
                                     Enviar otro mensaje
