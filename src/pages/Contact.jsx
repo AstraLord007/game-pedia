@@ -1,7 +1,6 @@
 import { useForm, ValidationError } from '@formspree/react';
 
 export default function Contact() {
-    // Usamos el hook oficial de Formspree con tu endpoint exacto
     const [state, handleSubmit] = useForm("maeeedgl");
 
     return (

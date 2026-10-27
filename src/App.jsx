@@ -10,7 +10,6 @@ export default function App() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-950 text-gray-100">
       <Navbar />
-      {/* pt-48 garantiza que el contenido comience bien por debajo del Navbar fijo */}
       <main className="grow pt-28 px-4 sm:px-6">
         <Routes>
           <Route path="/" element={<HomeApi />} />
